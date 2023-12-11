@@ -1,0 +1,24 @@
+{
+    "name": "Common.Core",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:d9bbc61d820433c42883dc4de8b0e42f",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:8fccee2253fc4e8aa95c69b947160857",
+        "GUID:62cacf4e83ce40779bc197414a436930",
+        "GUID:88750f528953407db077f1a2322a16da",
+        "GUID:b3ea99d3221c4b9bb0b0b6005f280696",
+        "GUID:3f695ec3196244c4bc16186a9202df71",
+        "GUID:a22124ffcb4b473280aca90c2f9bb8ee"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
