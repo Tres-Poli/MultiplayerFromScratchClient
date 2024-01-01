@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "5cc97c7f0085624b6ef57853d70b404440060cef"
     },
+    "com.leopotam.ecs": {
+      "version": "https://github.com/Leopotam/ecs.git#develop",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b3b3dcfad2f9a8143aec788daa164cb53ac410c7"
+    },
     "com.unity.addressables": {
       "version": "1.21.19",
       "depth": 0,
