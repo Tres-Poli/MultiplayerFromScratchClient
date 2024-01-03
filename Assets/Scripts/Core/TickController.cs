@@ -49,6 +49,14 @@ namespace Core
             }
         }
 
+        private void FixedUpdate()
+        {
+            for (int i = 0; i < _fixedControllers.Count; i++)
+            {
+                _fixedControllers[i].UpdateFixedController(Time.fixedDeltaTime);
+            }
+        }
+
         public IFinite AddController(IUpdateController updateController)
         {
             ControllerHolder<IUpdateController> holder = new ControllerHolder<IUpdateController>(updateController);

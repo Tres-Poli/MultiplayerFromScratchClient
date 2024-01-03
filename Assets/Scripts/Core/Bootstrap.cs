@@ -13,14 +13,16 @@ using VContainer;
 
 namespace Core
 {
-    public class Bootstrap : MonoBehaviour, IUpdateController
+    public class Bootstrap : MonoBehaviour, IFixedController, IUpdateController
     {
         [SerializeField] private RectTransform _mainCanvas;
         
         public static EcsWorld World { get; private set; }
-        private EcsSystems _systems;
+        private EcsSystems _updateSystems;
+        private EcsSystems _fixedSystems;
 
         private IFinite _updateSubscription;
+        private IFinite _fixedSubscription;
         
         private void Start()
         {
@@ -29,9 +31,10 @@ namespace Core
         
         private void OnDestroy() 
         {
-            _systems.Destroy();
+            _updateSystems.Destroy();
             World.Destroy();
             
+            _fixedSubscription.Finite();
             _updateSubscription.Finite();
         }
 
@@ -41,11 +44,14 @@ namespace Core
             ICharacterFactory characterFactory)
         {
             World = new EcsWorld ();
-            _systems = new EcsSystems(World)
-                .Add(new MoveSystem(messageRouter, playerInput))
+            _updateSystems = new EcsSystems(World)
                 .Add(new NetworkSystem(logger, resourceManager, messageRouter, characterFactory));
+
+            _fixedSystems = new EcsSystems(World)
+                .Add(new MoveSystem(messageRouter, playerInput));
             
-            _systems.Init();
+            _updateSystems.Init();
+            _fixedSystems.Init();
             
             await uiManager.Initialize(_mainCanvas);
             uiManager.AddScreen<ILoggerController>(ScreenType.Logger);
@@ -55,12 +61,18 @@ namespace Core
                 await initializeInstances[i].Initialize();
             }
 
-            _updateSubscription = tickController.AddController(this);
+            _fixedSubscription = tickController.AddController((IFixedController)this);
+            _updateSubscription = tickController.AddController((IUpdateController)this);
+        }
+
+        public void UpdateFixedController(float deltaTime)
+        {
+            _fixedSystems.Run();
         }
 
         public void UpdateController(float deltaTime)
         {
-            _systems.Run();
+            _updateSystems.Run();
         }
     }
 }

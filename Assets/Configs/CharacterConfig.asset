@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86b52b48cfa4715855671c11ba4f0fe, type: 3}
   m_Name: CharacterConfig
   m_EditorClassIdentifier: 
-  <Speed>k__BackingField: 2
+  <Speed>k__BackingField: 4

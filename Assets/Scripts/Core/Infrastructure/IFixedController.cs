@@ -2,6 +2,6 @@
 {
     public interface IFixedController : IController
     {
-        void UpdateController(float deltaTime);
+        void UpdateFixedController(float deltaTime);
     }
 }
