@@ -1,7 +1,6 @@
 ﻿using Character;
-using CharacterControllers;
-using Input;
 using Messages;
+using Networking;
 using UI;
 using ResourceManagement;
 using UnityEngine;
@@ -19,11 +18,11 @@ namespace Core
             builder.RegisterInstance<ITickController>(tickController);
 
             builder.RegisterInstance<Camera>(Camera.main);
-            builder.Register<IPlayerInput, PlayerInput>(Lifetime.Singleton);
             builder.Register<ILoggerService, Logger>(Lifetime.Singleton);
             
             builder.Register<IResourceManager, ResourceManager>(Lifetime.Singleton);
             builder.Register<ICharacterFactory, CharacterFactory>(Lifetime.Singleton).As<IInitialize>();
+            builder.Register<ICharacterProvider, CharacterProvider>(Lifetime.Singleton);
             builder.Register<ISpawnManager, SpawnManager>(Lifetime.Singleton);
             
             // UI
@@ -32,6 +31,7 @@ namespace Core
             
             // Networking
             builder.Register<IMessageRouter, MessageRouter>(Lifetime.Singleton);
+            builder.Register<IConnectionSyncManager, ConnectionSyncManager>(Lifetime.Singleton);
         }
     }
 }

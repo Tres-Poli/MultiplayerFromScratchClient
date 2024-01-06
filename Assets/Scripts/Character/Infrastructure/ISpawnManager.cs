@@ -1,9 +1,10 @@
 ﻿using Character;
+using UnityEngine;
 
-namespace CharacterControllers
+namespace Character
 {
     public interface ISpawnManager
     {
-        void SpawnCharacter(CharacterView view);
+        void SpawnCharacter(CharacterView view, Vector3 position);
     }
 }

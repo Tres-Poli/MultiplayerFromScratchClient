@@ -1,10 +1,11 @@
-﻿using CharacterControllers;
-using Leopotam.Ecs;
+﻿using Leopotam.Ecs;
 using ResourceManagement;
 using Components;
 using Configs;
 using Core;
 using Cysharp.Threading.Tasks;
+using DataStructures;
+using Systems;
 using UnityEngine;
 
 namespace Character
@@ -18,6 +19,8 @@ namespace Character
         private readonly ISpawnManager _spawnManager;
         private CharacterConfig _config;
 
+        private CharacterView _characterPrefab;
+
         public CharacterFactory(IResourceManager resourceManager, ISpawnManager spawnManager)
         {
             _resourceManager = resourceManager;
@@ -27,14 +30,14 @@ namespace Character
         public async UniTask Initialize()
         {
             _config = await _resourceManager.LoadConfig<CharacterConfig>(PlayerConfigKey);
+            _characterPrefab = await _resourceManager.LoadPrefab<CharacterView>(PlayerPrefabKey);
         }
         
-        public async UniTaskVoid CreateCharacter(ushort id)
+        public CharacterView CreateCharacter(ushort id, CharacterType type, Vector3 position)
         {
-            CharacterView charView = await _resourceManager.LoadPrefab<CharacterView>(PlayerPrefabKey);
-            CharacterView charInstance = Object.Instantiate(charView);
+            CharacterView charInstance = Object.Instantiate(_characterPrefab);
             EcsEntity entity = Bootstrap.World.NewEntity();
-            MoveComponent moveComponent = new MoveComponent()
+            SpeedComponent speedComponent = new SpeedComponent()
             {
                 Speed = _config.Speed
             };
@@ -48,15 +51,29 @@ namespace Character
             {
                 Id = id
             };
-
-            PlayerComponent playerComponent = new PlayerComponent();
             
-            entity.Replace(moveComponent);
+
+            entity.Replace(speedComponent);
             entity.Replace(bodyComponent);
             entity.Replace(idComponent);
-            entity.Replace(playerComponent);
 
-            _spawnManager.SpawnCharacter(charInstance);
+
+            if (id == NetworkSystem.Client.Id)
+            {
+                PlayerInputComponent inputComponent = new PlayerInputComponent();
+                MoveComponent moveComponent = new MoveComponent();
+                entity.Replace(inputComponent);
+                entity.Replace(moveComponent);
+            }
+            else
+            {
+                InterpolateMoveComponent interpolateMoveComponent = new InterpolateMoveComponent();
+                interpolateMoveComponent.PositionsBuffer = new CircularBuffer<Vector3>(16, 2);
+                entity.Replace(interpolateMoveComponent);
+            }
+
+            _spawnManager.SpawnCharacter(charInstance, position);
+            return charInstance;
         }
     }
 }

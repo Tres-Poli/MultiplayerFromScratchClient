@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using CharacterControllers;
 using Cysharp.Threading.Tasks;
-using Input;
 using Leopotam.Ecs;
 using Messages;
+using Networking;
 using ResourceManagement;
 using Riptide.Utils;
 using Systems;
@@ -40,15 +39,19 @@ namespace Core
 
         [Inject]
         public async UniTaskVoid OnStartInject(IReadOnlyList<IInitialize> initializeInstances, IUiManager uiManager, ILoggerService logger, 
-            IResourceManager resourceManager, ITickController tickController, IMessageRouter messageRouter, IPlayerInput playerInput, 
-            ICharacterFactory characterFactory)
+            IResourceManager resourceManager, ITickController tickController, IMessageRouter messageRouter, 
+            IConnectionSyncManager connectionSyncManager, Camera cameraMain)
         {
             World = new EcsWorld ();
             _updateSystems = new EcsSystems(World)
-                .Add(new NetworkSystem(logger, resourceManager, messageRouter, characterFactory));
+                .Add(new NetworkSystem(logger, resourceManager, messageRouter, connectionSyncManager))
+                .Add(new InputSystem(cameraMain, messageRouter))
+                .Add(new CharacterSyncSystem(connectionSyncManager));
+                
 
             _fixedSystems = new EcsSystems(World)
-                .Add(new MoveSystem(messageRouter, playerInput));
+                .Add(new MoveSystem(messageRouter))
+                .Add(new MoveReconciliationSystem(messageRouter));
             
             _updateSystems.Init();
             _fixedSystems.Init();
@@ -63,6 +66,8 @@ namespace Core
 
             _fixedSubscription = tickController.AddController((IFixedController)this);
             _updateSubscription = tickController.AddController((IUpdateController)this);
+            
+            Cursor.lockState = CursorLockMode.Confined;
         }
 
         public void UpdateFixedController(float deltaTime)

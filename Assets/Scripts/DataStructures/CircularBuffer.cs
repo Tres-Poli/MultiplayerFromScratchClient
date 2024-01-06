@@ -6,11 +6,14 @@
         private int _head;
         private int _tail;
         private int _peekTail;
+
+        public int Tail => _tail;
+        public int Head => _head;
         
-        public CircularBuffer(int size)
+        public CircularBuffer(int size, int initHeadOffset = 0)
         {
             _array = new T[size];
-            _head = 0;
+            _head = initHeadOffset;
             _tail = 0;
             _peekTail = _tail;
         }

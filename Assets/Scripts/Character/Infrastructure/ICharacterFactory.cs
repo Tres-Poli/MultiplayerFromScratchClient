@@ -1,9 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using UnityEngine;
 
-namespace CharacterControllers
+namespace Character
 {
     public interface ICharacterFactory
     {
-        UniTaskVoid CreateCharacter(ushort id);
+        CharacterView CreateCharacter(ushort id, CharacterType type, Vector3 position);
     }
 }

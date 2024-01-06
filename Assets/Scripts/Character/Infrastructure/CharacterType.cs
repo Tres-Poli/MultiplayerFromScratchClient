@@ -1,6 +1,6 @@
-﻿namespace CharacterControllers
+﻿namespace Character
 {
-    public enum CharacterType
+    public enum CharacterType : ushort
     {
         Player = 0,
     }

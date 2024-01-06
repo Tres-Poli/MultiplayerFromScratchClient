@@ -6,7 +6,6 @@ namespace Messages
     {
         void Send(Message message);
         void Handle(ushort messageType, Message message);
-        void Subscribe(ushort messageType, IMessageHandler handler);
-        void Unsubscribe(ushort messageType);
+        IMessageHandler<T> GetHandler<T>(ushort messageType) where T : IMessageSerializable, new();
     }
 }

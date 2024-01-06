@@ -1,9 +1,10 @@
 ﻿using System;
-using CharacterControllers;
+using Character;
 using Configs;
 using Core;
 using Leopotam.Ecs;
 using Messages;
+using Networking;
 using ResourceManagement;
 using Riptide;
 
@@ -16,18 +17,18 @@ namespace Systems
         private readonly ILoggerService _loggerService;
         private readonly IResourceManager _resourceManager;
         private readonly IMessageRouter _messageRouter;
-        private readonly ICharacterFactory _characterFactory;
+        private readonly IConnectionSyncManager _connectionSyncManager;
         private const string ClientConfig = "ClientConfig";
 
         private Client _client;
 
         public NetworkSystem(ILoggerService loggerService, IResourceManager resourceManager, IMessageRouter messageRouter, 
-            ICharacterFactory characterFactory)
+            IConnectionSyncManager connectionSyncManager)
         {
             _loggerService = loggerService;
             _resourceManager = resourceManager;
             _messageRouter = messageRouter;
-            _characterFactory = characterFactory;
+            _connectionSyncManager = connectionSyncManager;
         }
         
         public async void Init()
@@ -67,7 +68,6 @@ namespace Systems
         private void Connected_Callback(object sender, EventArgs eventArgs)
         {
             _loggerService.Log($"Client connected");
-            _characterFactory.CreateCharacter(_client.Id);
         }
 
         private void ConnectionFailed_Callback(object sender, ConnectionFailedEventArgs args)
